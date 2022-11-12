@@ -96,6 +96,35 @@ dependencies = [
 [[package]]
 name = "anemo"
 version = "0.0.0"
+source = "git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f#4a7d508a9c6a72afe56c3db69dda4721b89c2e3f"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bincode",
+ "bytes",
+ "ed25519",
+ "futures",
+ "http",
+ "matchit",
+ "pin-project-lite",
+ "pkcs8",
+ "quinn 0.9.0",
+ "rand 0.8.5",
+ "rcgen 0.9.3",
+ "rustls",
+ "serde 1.0.147",
+ "serde_json",
+ "tokio",
+ "tokio-util 0.7.4",
+ "tower",
+ "tracing",
+ "webpki",
+ "x509-parser",
+]
+
+[[package]]
+name = "anemo"
+version = "0.0.0"
 source = "git+https://github.com/mystenlabs/anemo.git?rev=87d60b249a9954775a95790e3bc9ca1a0df7969f#87d60b249a9954775a95790e3bc9ca1a0df7969f"
 dependencies = [
  "anyhow",
@@ -108,7 +137,7 @@ dependencies = [
  "matchit",
  "pin-project-lite",
  "pkcs8",
- "quinn",
+ "quinn 0.8.5",
  "rand 0.8.5",
  "rcgen 0.9.3",
  "rustls",
@@ -126,6 +155,17 @@ dependencies = [
 [[package]]
 name = "anemo-build"
 version = "0.0.0"
+source = "git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f#4a7d508a9c6a72afe56c3db69dda4721b89c2e3f"
+dependencies = [
+ "prettyplease",
+ "proc-macro2 1.0.47",
+ "quote 1.0.21",
+ "syn 1.0.103",
+]
+
+[[package]]
+name = "anemo-build"
+version = "0.0.0"
 source = "git+https://github.com/mystenlabs/anemo.git?rev=87d60b249a9954775a95790e3bc9ca1a0df7969f#87d60b249a9954775a95790e3bc9ca1a0df7969f"
 dependencies = [
  "prettyplease",
@@ -137,9 +177,22 @@ dependencies = [
 [[package]]
 name = "anemo-tower"
 version = "0.0.0"
+source = "git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f#4a7d508a9c6a72afe56c3db69dda4721b89c2e3f"
+dependencies = [
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
+ "bytes",
+ "futures",
+ "pin-project-lite",
+ "tower",
+ "tracing",
+]
+
+[[package]]
+name = "anemo-tower"
+version = "0.0.0"
 source = "git+https://github.com/mystenlabs/anemo.git?rev=87d60b249a9954775a95790e3bc9ca1a0df7969f#87d60b249a9954775a95790e3bc9ca1a0df7969f"
 dependencies = [
- "anemo",
+ "anemo 0.0.0 (git+https://github.com/mystenlabs/anemo.git?rev=87d60b249a9954775a95790e3bc9ca1a0df7969f)",
  "bytes",
  "futures",
  "pin-project-lite",
@@ -5138,8 +5191,8 @@ dependencies = [
 name = "narwhal-network"
 version = "0.1.0"
 dependencies = [
- "anemo",
- "anemo-tower",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
+ "anemo-tower 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "anyhow",
  "async-trait",
  "axum",
@@ -5171,7 +5224,7 @@ dependencies = [
 name = "narwhal-node"
 version = "0.1.0"
 dependencies = [
- "anemo",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "arc-swap",
  "async-trait",
  "axum",
@@ -5222,8 +5275,8 @@ dependencies = [
 name = "narwhal-primary"
 version = "0.1.0"
 dependencies = [
- "anemo",
- "anemo-tower",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
+ "anemo-tower 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "anyhow",
  "arc-swap",
  "async-recursion",
@@ -5300,7 +5353,7 @@ dependencies = [
 name = "narwhal-test-utils"
 version = "0.1.0"
 dependencies = [
- "anemo",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "arc-swap",
  "base64",
  "bincode",
@@ -5342,8 +5395,8 @@ dependencies = [
 name = "narwhal-types"
 version = "0.1.0"
 dependencies = [
- "anemo",
- "anemo-build",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
+ "anemo-build 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "async-trait",
  "base64",
  "bincode",
@@ -5388,8 +5441,8 @@ dependencies = [
 name = "narwhal-worker"
 version = "0.1.0"
 dependencies = [
- "anemo",
- "anemo-tower",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
+ "anemo-tower 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "anyhow",
  "arc-swap",
  "async-trait",
@@ -6684,8 +6737,27 @@ dependencies = [
  "futures-channel",
  "futures-util",
  "fxhash",
- "quinn-proto",
- "quinn-udp",
+ "quinn-proto 0.8.4",
+ "quinn-udp 0.1.3",
+ "rustls",
+ "thiserror",
+ "tokio",
+ "tracing",
+ "webpki",
+]
+
+[[package]]
+name = "quinn"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a5f2962a2f18666b1b690cbc33f528b4fcdfc6e51a84b47c7fb19b6a9fab753"
+dependencies = [
+ "bytes",
+ "futures-io",
+ "pin-project-lite",
+ "quinn-proto 0.9.0",
+ "quinn-udp 0.3.0",
+ "rustc-hash",
  "rustls",
  "thiserror",
  "tokio",
@@ -6713,6 +6785,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "quinn-proto"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1268269057c3f78dab82fe8d8b7834e656710cff55b97dbc890a67dcc113b2e"
+dependencies = [
+ "bytes",
+ "rand 0.8.5",
+ "ring",
+ "rustc-hash",
+ "rustls",
+ "slab",
+ "thiserror",
+ "tinyvec",
+ "tracing",
+ "webpki",
+]
+
+[[package]]
 name = "quinn-udp"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6720,10 +6810,23 @@ checksum = "9f832d8958db3e84d2ec93b5eb2272b45aa23cf7f8fe6e79f578896f4e6c231b"
 dependencies = [
  "futures-util",
  "libc",
- "quinn-proto",
+ "quinn-proto 0.8.4",
  "socket2",
  "tokio",
  "tracing",
+]
+
+[[package]]
+name = "quinn-udp"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47085d44ed35b0f4499a88e47d689a411d483845966124e187a8f3cbb39eeebb"
+dependencies = [
+ "libc",
+ "quinn-proto 0.9.0",
+ "socket2",
+ "tracing",
+ "windows-sys 0.42.0",
 ]
 
 [[package]]
@@ -8340,7 +8443,7 @@ dependencies = [
 name = "sui-config"
 version = "0.0.0"
 dependencies = [
- "anemo",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "anyhow",
  "arc-swap",
  "bcs",
@@ -8708,8 +8811,8 @@ dependencies = [
 name = "sui-network"
 version = "0.0.0"
 dependencies = [
- "anemo",
- "anemo-build",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
+ "anemo-build 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "anyhow",
  "async-trait",
  "futures",
@@ -8732,8 +8835,8 @@ dependencies = [
 name = "sui-node"
 version = "0.17.0"
 dependencies = [
- "anemo",
- "anemo-tower",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
+ "anemo-tower 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "anyhow",
  "axum",
  "chrono",
@@ -8876,7 +8979,7 @@ dependencies = [
 name = "sui-simulator"
 version = "0.7.0"
 dependencies = [
- "anemo",
+ "anemo 0.0.0 (git+https://github.com/mwtian/anemo.git?rev=4a7d508a9c6a72afe56c3db69dda4721b89c2e3f)",
  "fastcrypto",
  "msim",
  "sui-framework",
@@ -10732,9 +10835,9 @@ dependencies = [
  "ahash",
  "aho-corasick",
  "aliasable",
- "anemo",
- "anemo-build",
- "anemo-tower",
+ "anemo 0.0.0 (git+https://github.com/mystenlabs/anemo.git?rev=87d60b249a9954775a95790e3bc9ca1a0df7969f)",
+ "anemo-build 0.0.0 (git+https://github.com/mystenlabs/anemo.git?rev=87d60b249a9954775a95790e3bc9ca1a0df7969f)",
+ "anemo-tower 0.0.0 (git+https://github.com/mystenlabs/anemo.git?rev=87d60b249a9954775a95790e3bc9ca1a0df7969f)",
  "anes",
  "ansi_term",
  "anyhow",
@@ -11248,9 +11351,9 @@ dependencies = [
  "quick-error 1.2.3",
  "quick-error 2.0.1",
  "quick-xml",
- "quinn",
- "quinn-proto",
- "quinn-udp",
+ "quinn 0.8.5",
+ "quinn-proto 0.8.4",
+ "quinn-udp 0.1.3",
  "quote 0.6.13",
  "quote 1.0.21",
  "radium 0.5.3",

@@ -71,11 +71,11 @@ version = "0.17.0"
 
 [profile.release]
 # debug = 1 means line charts only, which is minimum needed for good stack traces
-debug = 1
+debug = true
 # Write debug info into a separate file.
-split-debuginfo = 'packed'
+# split-debuginfo = 'packed'
 # Without stripping, sui binary size would be > 1GB.
-strip = 'debuginfo'
+strip = 'none'
 # Exit process with SIGABRT when any thread panics
 panic = 'abort'
 
@@ -119,9 +119,9 @@ fastcrypto = { git = "https://github.com/MystenLabs/fastcrypto", rev = "b6411e01
 fastcrypto-zkp = { git = "https://github.com/MystenLabs/fastcrypto", rev = "b6411e014255c9e2a0f6dff00478bc45d76e9f5d", package = "fastcrypto-zkp" }
 
 # anemo dependencies
-anemo = { git = "https://github.com/mystenlabs/anemo.git", rev = "87d60b249a9954775a95790e3bc9ca1a0df7969f" }
-anemo-build = { git = "https://github.com/mystenlabs/anemo.git", rev = "87d60b249a9954775a95790e3bc9ca1a0df7969f" }
-anemo-tower = { git = "https://github.com/mystenlabs/anemo.git", rev = "87d60b249a9954775a95790e3bc9ca1a0df7969f" }
+anemo = { git = "https://github.com/mwtian/anemo.git", rev = "4a7d508a9c6a72afe56c3db69dda4721b89c2e3f" }
+anemo-build = { git = "https://github.com/mwtian/anemo.git", rev = "4a7d508a9c6a72afe56c3db69dda4721b89c2e3f" }
+anemo-tower = { git = "https://github.com/mwtian/anemo.git", rev = "4a7d508a9c6a72afe56c3db69dda4721b89c2e3f" }
 
 # Use the same workspace-hack across crates.
 workspace-hack = { path = "crates/workspace-hack" }
