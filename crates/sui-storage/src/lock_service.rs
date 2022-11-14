@@ -139,12 +139,16 @@ impl LockServiceImpl {
     /// Returns Err(TransactionLockDoesNotExist) if at least one object lock is not initialized.
     fn locks_exist(&self, objects: &[ObjectRef]) -> SuiResult {
         let locks = self.transaction_lock.multi_get(objects)?;
+        let mut missing = Vec::new();
         for (lock, obj_ref) in locks.into_iter().zip(objects) {
-            fp_ensure!(
-                lock.is_some(),
-                SuiError::ObjectLockUninitialized { obj_ref: *obj_ref }
-            );
+            if lock.is_none() {
+                missing.push(*obj_ref);
+            }
         }
+        fp_ensure!(
+            missing.is_empty(),
+            SuiError::ObjectLocksUninitialized { obj_refs: missing }
+        );
         debug!(?objects, "locks_exist: all locks do exist");
         Ok(())
     }
@@ -250,14 +254,19 @@ impl LockServiceImpl {
     ) -> SuiResult {
         debug!(?tx_digest, ?owned_input_objects, "acquire_locks");
         let mut locks_to_write = Vec::new();
+        let mut missing = Vec::new();
         let locks = self.transaction_lock.multi_get(owned_input_objects)?;
 
         for ((i, lock), obj_ref) in locks.iter().enumerate().zip(owned_input_objects) {
-            // The object / version must exist, and therefore lock initialized.
-            let lock = lock
-                .as_ref()
-                .ok_or(SuiError::ObjectLockUninitialized { obj_ref: *obj_ref })?;
+            let lock = match &lock {
+                Some(lock) => lock,
+                None => {
+                    missing.push(*obj_ref);
+                    continue;
+                }
+            };
 
+            // Note: if lock is None, that indicates that the lock existed but was unset.
             if let Some(LockInfo {
                 epoch: previous_epoch,
                 tx_digest: previous_tx_digest,
@@ -294,6 +303,11 @@ impl LockServiceImpl {
             let obj_ref = owned_input_objects[i];
             locks_to_write.push((obj_ref, Some(LockInfo { epoch, tx_digest })));
         }
+
+        fp_ensure!(
+            missing.is_empty(),
+            SuiError::ObjectLocksUninitialized { obj_refs: missing }
+        );
 
         if !locks_to_write.is_empty() {
             trace!(?locks_to_write, "Writing locks");
@@ -733,7 +747,9 @@ mod tests {
         // Should not be able to acquire lock for uninitialized locks
         assert_eq!(
             ls.acquire_locks(0, &[ref1, ref2], tx1),
-            Err(SuiError::ObjectLockUninitialized { obj_ref: ref1 })
+            Err(SuiError::ObjectLocksUninitialized {
+                obj_refs: vec![ref1]
+            })
         );
         assert_eq!(ls.get_lock(ref1), Ok(None));
 
@@ -746,7 +762,9 @@ mod tests {
         // Should not be able to acquire lock if not all objects initialized
         assert_eq!(
             ls.acquire_locks(0, &[ref1, ref2, ref3], tx1),
-            Err(SuiError::ObjectLockUninitialized { obj_ref: ref3 })
+            Err(SuiError::ObjectLocksUninitialized {
+                obj_refs: vec![ref3]
+            })
         );
 
         // Should be able to acquire lock if all objects initialized
@@ -763,7 +781,9 @@ mod tests {
         assert_eq!(ls.locks_exist(&[ref1, ref2]), Ok(()));
         assert_eq!(
             ls.locks_exist(&[ref2, ref3]),
-            Err(SuiError::ObjectLockUninitialized { obj_ref: ref3 })
+            Err(SuiError::ObjectLocksUninitialized {
+                obj_refs: vec![ref3]
+            })
         );
 
         // Should get TransactionLockExists if try to initialize already locked object
