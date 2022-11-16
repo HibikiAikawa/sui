@@ -484,14 +484,7 @@ impl Core {
             self.metrics
                 .header_to_certificate_latency
                 .with_label_values(&[&certificate.epoch().to_string()])
-                .observe(
-                    certificate
-                        .header
-                        .metadata
-                        .created_at
-                        .elapsed()
-                        .as_secs_f64(),
-                );
+                .observe(certificate.header.created_at.elapsed().as_secs_f64());
 
             // Process the new certificate.
             match self.process_certificate(certificate).await {
