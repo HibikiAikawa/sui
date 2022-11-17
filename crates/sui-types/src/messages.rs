@@ -1936,12 +1936,14 @@ pub struct ConsensusTransaction {
 pub enum ConsensusTransactionKey {
     Certificate(TransactionDigest),
     CheckpointSignature(AuthorityName, CheckpointSequenceNumber),
+    EndOfPublish(AuthorityName),
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum ConsensusTransactionKind {
     UserTransaction(Box<CertifiedTransaction>),
     CheckpointSignature(Box<CheckpointSignatureMessage>),
+    EndOfPublish(AuthorityName),
 }
 
 impl ConsensusTransaction {
@@ -1982,6 +1984,7 @@ impl ConsensusTransaction {
                 certificate.verify_signature(committee)
             }
             ConsensusTransactionKind::CheckpointSignature(data) => data.verify(committee),
+            ConsensusTransactionKind::EndOfPublish(_) => Ok(()),
         }
     }
 
@@ -1995,6 +1998,9 @@ impl ConsensusTransaction {
                     data.summary.auth_signature.authority,
                     data.summary.summary.sequence_number,
                 )
+            }
+            ConsensusTransactionKind::EndOfPublish(authority) => {
+                ConsensusTransactionKey::EndOfPublish(*authority)
             }
         }
     }
