@@ -18,6 +18,7 @@ import type { SerializedError } from '@reduxjs/toolkit';
 import type { FormikHelpers } from 'formik';
 
 import st from './TransferNFTForm.module.scss';
+import { useGasEstimation } from './useGasEstimation';
 
 const initialValues = {
     to: '',
@@ -46,20 +47,30 @@ function TransferNFTCard({ objectId }: TransferProps) {
         [address, objectId]
     );
     const navigate = useNavigate();
+
+    const [gasBudget, gasEstimation, gasEstimationResult] =
+        useGasEstimation(objectId);
+    console.log({ gasBudget, gasEstimation, gasEstimationResult });
     const onHandleSubmit = useCallback(
         async (
             { to }: FormValues,
             { resetForm }: FormikHelpers<FormValues>
         ) => {
-            if (objectId === null) {
+            console.log('submiting', {
+                recipient: to,
+                objectId,
+                gasBudget,
+            });
+            if (objectId === null || !gasBudget) {
                 return;
             }
             setSendError(null);
             try {
                 const resp = await dispatch(
                     transferNFT({
-                        recipientAddress: to,
-                        nftId: objectId,
+                        recipient: to,
+                        objectId,
+                        gasBudget,
                     })
                 ).unwrap();
                 resetForm();
@@ -75,7 +86,7 @@ function TransferNFTCard({ objectId }: TransferProps) {
                 setSendError((e as SerializedError).message || null);
             }
         },
-        [dispatch, navigate, objectId]
+        [dispatch, navigate, objectId, gasBudget]
     );
     const handleOnClearSubmitError = useCallback(() => {
         setSendError(null);
@@ -99,8 +110,9 @@ function TransferNFTCard({ objectId }: TransferProps) {
                     onSubmit={onHandleSubmit}
                 >
                     <TransferNFTForm
-                        nftID={objectId}
                         submitError={sendError}
+                        gasBudget={gasBudget}
+                        isGasEstimationLoading={gasEstimationResult.isLoading}
                         onClearSubmitError={handleOnClearSubmitError}
                     />
                 </Formik>

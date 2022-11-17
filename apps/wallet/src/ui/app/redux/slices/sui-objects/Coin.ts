@@ -16,11 +16,9 @@ import type {
 const COIN_TYPE = '0x2::coin::Coin';
 const COIN_TYPE_ARG_REGEX = /^0x2::coin::Coin<(.+)>$/;
 
-export const DEFAULT_GAS_BUDGET_FOR_PAY = 150;
 export const DEFAULT_GAS_BUDGET_FOR_STAKE = 10000;
 export const GAS_TYPE_ARG = '0x2::sui::SUI';
 export const GAS_SYMBOL = 'SUI';
-export const DEFAULT_NFT_TRANSFER_GAS_FEE = 450;
 export const SUI_SYSTEM_STATE_OBJECT_ID =
     '0x0000000000000000000000000000000000000005';
 
@@ -54,22 +52,6 @@ export class Coin {
 
     public static getCoinTypeFromArg(coinTypeArg: string) {
         return `${COIN_TYPE}<${coinTypeArg}>`;
-    }
-
-    public static computeGasBudgetForPay(
-        coins: SuiMoveObject[],
-        amountToSend: bigint
-    ): number {
-        // TODO: improve the gas budget estimation
-        const numInputCoins =
-            CoinAPI.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(
-                coins,
-                amountToSend
-            ).length;
-        return (
-            DEFAULT_GAS_BUDGET_FOR_PAY *
-            Math.max(2, Math.min(100, numInputCoins / 2))
-        );
     }
 
     /**
@@ -122,8 +104,7 @@ export class Coin {
             coins,
             SUI_TYPE_ARG,
             amount,
-            await signer.getAddress(),
-            Coin.computeGasBudgetForPay(coins, amount)
+            await signer.getAddress()
         );
 
         const coinWithExactAmount2 = await Coin.selectSuiCoinWithExactAmount(

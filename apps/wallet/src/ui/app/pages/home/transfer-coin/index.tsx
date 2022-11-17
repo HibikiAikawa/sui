@@ -1,14 +1,16 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { getTransactionDigest } from '@mysten/sui.js';
+import { Coin, SUI_TYPE_ARG, getTransactionDigest } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Formik } from 'formik';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { v4 as uuidV4 } from 'uuid';
 
 import StepOne from './TransferCoinForm/StepOne';
 import StepTwo from './TransferCoinForm/StepTwo';
+import { parseAmount } from './TransferCoinForm/utils';
 import {
     createValidationSchemaStepOne,
     createValidationSchemaStepTwo,
@@ -22,7 +24,6 @@ import {
     accountAggregateBalancesSelector,
     accountCoinsSelector,
 } from '_redux/slices/account';
-import { Coin, GAS_TYPE_ARG } from '_redux/slices/sui-objects/Coin';
 import { sendTokens } from '_redux/slices/transactions';
 import { trackEvent } from '_src/shared/plausible';
 
@@ -52,7 +53,7 @@ function TransferCoinPage() {
     );
 
     const gasAggregateBalance = useMemo(
-        () => aggregateBalances[GAS_TYPE_ARG] || BigInt(0),
+        () => aggregateBalances[SUI_TYPE_ARG] || BigInt(0),
         [aggregateBalances]
     );
 
@@ -66,7 +67,7 @@ function TransferCoinPage() {
     const [formData] = useState<FormValues>(initialValues);
 
     const [coinDecimals] = useCoinDecimals(coinType);
-    const [gasDecimals] = useCoinDecimals(GAS_TYPE_ARG);
+    const [gasDecimals] = useCoinDecimals(SUI_TYPE_ARG);
     const allCoins = useAppSelector(accountCoinsSelector);
     const allCoinsOfSelectedTypeArg = useMemo(
         () =>
@@ -78,7 +79,7 @@ function TransferCoinPage() {
     const [amountToSend, setAmountToSend] = useState(BigInt(0));
     const gasBudget = useMemo(
         () =>
-            Coin.computeGasBudgetForPay(
+            Coin.computeTransferTxGasBudget(
                 allCoinsOfSelectedTypeArg,
                 amountToSend
             ),
@@ -117,7 +118,7 @@ function TransferCoinPage() {
             { to, amount }: FormValues,
             { resetForm }: FormikHelpers<FormValues>
         ) => {
-            if (coinType === null) {
+            if (coinType === null || !gasBudget) {
                 return;
             }
             setSendError(null);
@@ -125,17 +126,13 @@ function TransferCoinPage() {
                 props: { coinType },
             });
             try {
-                const bigIntAmount = BigInt(
-                    new BigNumber(amount)
-                        .shiftedBy(coinDecimals)
-                        .integerValue()
-                        .toString()
-                );
+                const bigIntAmount = parseAmount(amount, coinDecimals);
                 const response = await dispatch(
                     sendTokens({
                         amount: bigIntAmount,
                         recipientAddress: to,
                         tokenTypeArg: coinType,
+                        gasBudget,
                     })
                 ).unwrap();
 
@@ -201,9 +198,9 @@ function TransferCoinPage() {
         >
             <StepTwo
                 submitError={sendError}
-                gasBudget={gasBudget}
                 coinSymbol={coinSymbol}
                 coinType={coinType}
+                gasBudget={gasBudget}
                 onClearSubmitError={handleOnClearSubmitError}
             />
         </Formik>

@@ -31,6 +31,7 @@ type SendTokensTXArgs = {
     tokenTypeArg: string;
     amount: bigint;
     recipientAddress: SuiAddress;
+    gasBudget: number;
 };
 type TransactionResult = SuiExecuteTransactionResponse;
 
@@ -41,7 +42,7 @@ export const sendTokens = createAsyncThunk<
 >(
     'sui-objects/send-tokens',
     async (
-        { tokenTypeArg, amount, recipientAddress },
+        { tokenTypeArg, amount, recipientAddress, gasBudget },
         { getState, extra: { api, keypairVault }, dispatch }
     ) => {
         const state = getState();
@@ -53,12 +54,7 @@ export const sendTokens = createAsyncThunk<
             tokenTypeArg,
             amount,
             recipientAddress,
-            Coin.computeGasBudgetForPay(
-                coins.filter(
-                    (aCoin) => Coin.getCoinTypeArg(aCoin) === tokenTypeArg
-                ),
-                amount
-            )
+            gasBudget
         );
         // TODO: better way to sync latest objects
         dispatch(fetchAllOwnedAndRequiredObjects());

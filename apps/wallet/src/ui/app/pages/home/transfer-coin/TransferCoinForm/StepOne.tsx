@@ -1,11 +1,11 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import BigNumber from 'bignumber.js';
 import cl from 'classnames';
 import { ErrorMessage, Field, Form, useFormikContext } from 'formik';
 import { useEffect, useRef, memo } from 'react';
 
+import { parseAmount } from './utils';
 import { Content, Menu } from '_app/shared/bottom-menu-layout';
 import Button from '_app/shared/button';
 import ActiveCoinsCard from '_components/active-coins-card';
@@ -16,19 +16,6 @@ import { useCoinDecimals } from '_hooks';
 import type { FormValues } from '../';
 
 import st from './TransferCoinForm.module.scss';
-
-function parseAmount(amount: string, coinDecimals: number) {
-    try {
-        return BigInt(
-            new BigNumber(amount)
-                .shiftedBy(coinDecimals)
-                .integerValue()
-                .toString()
-        );
-    } catch (e) {
-        return BigInt(0);
-    }
-}
 
 export type TransferCoinFormProps = {
     coinSymbol: string;
