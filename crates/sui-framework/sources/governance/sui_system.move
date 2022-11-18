@@ -79,8 +79,9 @@ module sui::sui_system {
         max_validator_candidate_count: u64,
         min_validator_stake: u64,
         storage_gas_price: u64,
+        chain_id: u8
     ) {
-        let validators = validator_set::new(validators);
+        let validators = validator_set::new(validators, chain_id);
         let reference_gas_price = validator_set::derive_reference_gas_price(&validators);
         let state = SuiSystemState {
             // Use a hardcoded ID.
@@ -117,6 +118,7 @@ module sui::sui_system {
         stake: Coin<SUI>,
         gas_price: u64,
         commission_rate: u64,
+        chain_id: u8,
         ctx: &mut TxContext,
     ) {
         assert!(
@@ -142,7 +144,7 @@ module sui::sui_system {
             ctx
         );
 
-        validator_set::request_add_validator(&mut self.validators, validator);
+        validator_set::request_add_validator(&mut self.validators, validator, chain_id);
     }
 
     /// A validator can call this function to request a removal in the next epoch.

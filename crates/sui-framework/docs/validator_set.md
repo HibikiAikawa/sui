@@ -130,6 +130,12 @@
  Delegation switches requested during the current epoch, processed at epoch boundaries
  so that all the rewards with be added to the new delegation.
 </dd>
+<dt>
+<code>chain_id: u8</code>
+</dt>
+<dd>
+ chain id that represents the network (e.g. mainnet, testnet, devnet, etc.).
+</dd>
 </dl>
 
 
@@ -188,7 +194,7 @@
 
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_new">new</a>(init_active_validators: <a href="">vector</a>&lt;<a href="validator.md#0x2_validator_Validator">validator::Validator</a>&gt;): <a href="validator_set.md#0x2_validator_set_ValidatorSet">validator_set::ValidatorSet</a>
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_new">new</a>(init_active_validators: <a href="">vector</a>&lt;<a href="validator.md#0x2_validator_Validator">validator::Validator</a>&gt;, chain_id: u8): <a href="validator_set.md#0x2_validator_set_ValidatorSet">validator_set::ValidatorSet</a>
 </code></pre>
 
 
@@ -197,7 +203,7 @@
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_new">new</a>(init_active_validators: <a href="">vector</a>&lt;Validator&gt;): <a href="validator_set.md#0x2_validator_set_ValidatorSet">ValidatorSet</a> {
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_new">new</a>(init_active_validators: <a href="">vector</a>&lt;Validator&gt;, chain_id: u8): <a href="validator_set.md#0x2_validator_set_ValidatorSet">ValidatorSet</a> {
     <b>let</b> (total_validator_stake, total_delegation_stake, quorum_stake_threshold) = <a href="validator_set.md#0x2_validator_set_calculate_total_stake_and_quorum_threshold">calculate_total_stake_and_quorum_threshold</a>(&init_active_validators);
     <b>let</b> validators = <a href="validator_set.md#0x2_validator_set_ValidatorSet">ValidatorSet</a> {
         total_validator_stake,
@@ -208,6 +214,7 @@
         pending_removals: <a href="_empty">vector::empty</a>(),
         next_epoch_validators: <a href="_empty">vector::empty</a>(),
         pending_delegation_switches: <a href="vec_map.md#0x2_vec_map_empty">vec_map::empty</a>(),
+        chain_id
     };
     validators.next_epoch_validators = <a href="validator_set.md#0x2_validator_set_derive_next_epoch_validators">derive_next_epoch_validators</a>(&validators);
     validators
@@ -226,7 +233,7 @@ Called by <code><a href="sui_system.md#0x2_sui_system">sui_system</a></code>, ad
 processed at the end of epoch.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_request_add_validator">request_add_validator</a>(self: &<b>mut</b> <a href="validator_set.md#0x2_validator_set_ValidatorSet">validator_set::ValidatorSet</a>, <a href="validator.md#0x2_validator">validator</a>: <a href="validator.md#0x2_validator_Validator">validator::Validator</a>)
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_request_add_validator">request_add_validator</a>(self: &<b>mut</b> <a href="validator_set.md#0x2_validator_set_ValidatorSet">validator_set::ValidatorSet</a>, <a href="validator.md#0x2_validator">validator</a>: <a href="validator.md#0x2_validator_Validator">validator::Validator</a>, chain_id: u8)
 </code></pre>
 
 
@@ -235,12 +242,13 @@ processed at the end of epoch.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_request_add_validator">request_add_validator</a>(self: &<b>mut</b> <a href="validator_set.md#0x2_validator_set_ValidatorSet">ValidatorSet</a>, <a href="validator.md#0x2_validator">validator</a>: Validator) {
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="validator_set.md#0x2_validator_set_request_add_validator">request_add_validator</a>(self: &<b>mut</b> <a href="validator_set.md#0x2_validator_set_ValidatorSet">ValidatorSet</a>, <a href="validator.md#0x2_validator">validator</a>: Validator, chain_id: u8) {
     <b>assert</b>!(
         !<a href="validator_set.md#0x2_validator_set_contains_duplicate_validator">contains_duplicate_validator</a>(&self.active_validators, &<a href="validator.md#0x2_validator">validator</a>)
             && !<a href="validator_set.md#0x2_validator_set_contains_duplicate_validator">contains_duplicate_validator</a>(&self.pending_validators, &<a href="validator.md#0x2_validator">validator</a>),
         0
     );
+    <b>assert</b>!(self.chain_id == chain_id, 0);
     <a href="_push_back">vector::push_back</a>(&<b>mut</b> self.pending_validators, <a href="validator.md#0x2_validator">validator</a>);
     self.next_epoch_validators = <a href="validator_set.md#0x2_validator_set_derive_next_epoch_validators">derive_next_epoch_validators</a>(self);
 }

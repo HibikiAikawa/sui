@@ -13,6 +13,7 @@ use crate::base_types::AuthorityName;
 use crate::collection_types::{VecMap, VecSet};
 use crate::committee::{Committee, CommitteeWithNetAddresses, StakeUnit};
 use crate::crypto::AuthorityPublicKeyBytes;
+use crate::intent::ChainId;
 use crate::{
     balance::{Balance, Supply},
     id::UID,
@@ -134,6 +135,7 @@ pub struct ValidatorSet {
     pub pending_removals: Vec<u64>,
     pub next_epoch_validators: Vec<ValidatorMetadata>,
     pub pending_delegation_switches: VecMap<ValidatorPair, Vec<PendingWithdrawEntry>>,
+    pub chain_id: ChainId,
 }
 
 /// Rust version of the Move sui::sui_system::SuiSystemState type

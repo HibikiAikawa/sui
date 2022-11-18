@@ -52,6 +52,9 @@ module sui::validator_set {
         /// Delegation switches requested during the current epoch, processed at epoch boundaries
         /// so that all the rewards with be added to the new delegation.
         pending_delegation_switches: VecMap<ValidatorPair, vector<PendingWithdrawEntry>>,
+
+        /// chain id that represents the network (e.g. mainnet, testnet, devnet, etc.).
+        chain_id: u8
     }
 
     struct ValidatorPair has store, copy, drop {
@@ -63,7 +66,7 @@ module sui::validator_set {
 
     // ==== initialization at genesis ====
 
-    public(friend) fun new(init_active_validators: vector<Validator>): ValidatorSet {
+    public(friend) fun new(init_active_validators: vector<Validator>, chain_id: u8): ValidatorSet {
         let (total_validator_stake, total_delegation_stake, quorum_stake_threshold) = calculate_total_stake_and_quorum_threshold(&init_active_validators);
         let validators = ValidatorSet {
             total_validator_stake,
@@ -74,6 +77,7 @@ module sui::validator_set {
             pending_removals: vector::empty(),
             next_epoch_validators: vector::empty(),
             pending_delegation_switches: vec_map::empty(),
+            chain_id
         };
         validators.next_epoch_validators = derive_next_epoch_validators(&validators);
         validators
@@ -84,12 +88,13 @@ module sui::validator_set {
 
     /// Called by `sui_system`, add a new validator to `pending_validators`, which will be
     /// processed at the end of epoch.
-    public(friend) fun request_add_validator(self: &mut ValidatorSet, validator: Validator) {
+    public(friend) fun request_add_validator(self: &mut ValidatorSet, validator: Validator, chain_id: u8) {
         assert!(
             !contains_duplicate_validator(&self.active_validators, &validator)
                 && !contains_duplicate_validator(&self.pending_validators, &validator),
             0
         );
+        assert!(self.chain_id == chain_id, 0);
         vector::push_back(&mut self.pending_validators, validator);
         self.next_epoch_validators = derive_next_epoch_validators(self);
     }
@@ -670,6 +675,7 @@ module sui::validator_set {
             pending_removals: _,
             next_epoch_validators: _,
             pending_delegation_switches,
+            chain_id: _,
         } = self;
         while (!vector::is_empty(&active_validators)) {
             let v = vector::pop_back(&mut active_validators);

@@ -26,7 +26,7 @@ module sui::validator_set_tests {
         let validator4 = create_validator(@0x4, 4, ctx1);
 
         // Create a validator set with only the first validator in it.
-        let validator_set = validator_set::new(vector[validator1]);
+        let validator_set = validator_set::new(vector[validator1], 0);
         assert!(validator_set::next_epoch_validator_count(&validator_set) == 1, 0);
         assert!(validator_set::total_validator_stake(&validator_set) == 100, 0);
 
@@ -34,6 +34,7 @@ module sui::validator_set_tests {
         validator_set::request_add_validator(
             &mut validator_set,
             validator2,
+            0
         );
         // Adding validator during the epoch should not affect stake and quorum threshold.
         assert!(validator_set::next_epoch_validator_count(&validator_set) == 2, 0);
@@ -42,6 +43,7 @@ module sui::validator_set_tests {
         validator_set::request_add_validator(
             &mut validator_set,
             validator3,
+            0
         );
 
         test_scenario::next_tx(&mut scenario, @0x1);
@@ -75,6 +77,7 @@ module sui::validator_set_tests {
             validator_set::request_add_validator(
                 &mut validator_set,
                 validator4,
+                0
             );
         };
 
@@ -120,13 +123,13 @@ module sui::validator_set_tests {
         let v5 = create_validator_with_gas_price(@0x5, 10, 43, ctx1);
 
         // Create a validator set with only the first validator in it.
-        let validator_set = validator_set::new(vector[v1]);
+        let validator_set = validator_set::new(vector[v1], 0);
 
         assert!(validator_set::derive_reference_gas_price(&validator_set) == 45, 0);
 
         validator_set::request_add_validator(
             &mut validator_set,
-            v2,
+            v2, 0
         );
         validator_set::advance_epoch(&mut validator_set, &mut dummy_balance, &mut dummy_delegator_reward, &vec_map::empty(), ctx1);
 
@@ -134,7 +137,7 @@ module sui::validator_set_tests {
 
         validator_set::request_add_validator(
             &mut validator_set,
-            v3,
+            v3, 0
         );
         validator_set::advance_epoch(&mut validator_set, &mut dummy_balance, &mut dummy_delegator_reward, &vec_map::empty(), ctx1);
 
@@ -142,7 +145,7 @@ module sui::validator_set_tests {
 
         validator_set::request_add_validator(
             &mut validator_set,
-            v4,
+            v4, 0
         );
         validator_set::advance_epoch(&mut validator_set, &mut dummy_balance, &mut dummy_delegator_reward, &vec_map::empty(), ctx1);
 
@@ -150,7 +153,7 @@ module sui::validator_set_tests {
 
         validator_set::request_add_validator(
             &mut validator_set,
-            v5,
+            v5, 0
         );
         validator_set::advance_epoch(&mut validator_set, &mut dummy_balance, &mut dummy_delegator_reward, &vec_map::empty(), ctx1);
 

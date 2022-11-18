@@ -10,10 +10,12 @@ use sui_types::crypto::{
     get_key_pair, AuthorityPublicKeyBytes, KeypairTraits, NetworkKeyPair, ToFromBytes,
 };
 use sui_types::id::UID;
+use sui_types::intent::ChainId;
 use sui_types::sui_system_state::SystemParameters;
 use sui_types::sui_system_state::{
     StakingPool, SuiSystemState, Validator, ValidatorMetadata, ValidatorSet,
 };
+
 use sui_types::SUI_SYSTEM_STATE_OBJECT_ID;
 
 pub fn test_validatdor_metadata(
@@ -76,6 +78,7 @@ pub fn test_sui_system_state(epoch: EpochId, validators: Vec<Validator>) -> SuiS
         pending_removals: vec![],
         next_epoch_validators: vec![],
         pending_delegation_switches: VecMap { contents: vec![] },
+        chain_id: ChainId::Testing,
     };
     SuiSystemState {
         info: UID::new(SUI_SYSTEM_STATE_OBJECT_ID),
