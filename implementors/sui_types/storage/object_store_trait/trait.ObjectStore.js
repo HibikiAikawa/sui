@@ -1,0 +1,7 @@
+(function() {var implementors = {
+"simulacrum":[["impl ObjectStore for <a class=\"struct\" href=\"simulacrum/struct.InMemoryStore.html\" title=\"struct simulacrum::InMemoryStore\">InMemoryStore</a>"]],
+"sui_core":[["impl ObjectStore for <a class=\"struct\" href=\"sui_core/authority/struct.AuthorityStore.html\" title=\"struct sui_core::authority::AuthorityStore\">AuthorityStore</a>"],["impl ObjectStore for <a class=\"struct\" href=\"sui_core/authority/authority_store_tables/struct.AuthorityPerpetualTables.html\" title=\"struct sui_core::authority::authority_store_tables::AuthorityPerpetualTables\">AuthorityPerpetualTables</a>"]],
+"sui_indexer":[["impl ObjectStore for <a class=\"struct\" href=\"sui_indexer/indexer_reader/struct.IndexerReader.html\" title=\"struct sui_indexer::indexer_reader::IndexerReader\">IndexerReader</a>"],["impl ObjectStore for <a class=\"struct\" href=\"sui_indexer/store/struct.CheckpointTxData.html\" title=\"struct sui_indexer::store::CheckpointTxData\">CheckpointTxData</a>"]],
+"sui_transactional_test_runner":[["impl ObjectStore for <a class=\"struct\" href=\"sui_transactional_test_runner/struct.ValidatorWithFullnode.html\" title=\"struct sui_transactional_test_runner::ValidatorWithFullnode\">ValidatorWithFullnode</a>"]],
+"sui_types":[]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
